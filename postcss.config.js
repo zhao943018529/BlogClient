@@ -12,5 +12,7 @@ module.exports = {
       ],
       grid: true,
     }),
+    // 根据 browserslist 自动导入需要的 normalize.css 内容
+    require('postcss-normalize'),
   ],
 };

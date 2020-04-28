@@ -20,9 +20,16 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['prettier', 'react', '@typescript-eslint'],
+  plugins: ['react-hooks', 'prettier', 'react', '@typescript-eslint'],
   rules: {
     'react-hooks/rules-of-hooks': 'error',
-    'linebreak-style': ['error', 'unix'],
+    'linebreak-style': ['off', 'unix'],
+    'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 };
