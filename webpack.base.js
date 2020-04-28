@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   mode: 'development',
 
@@ -5,7 +7,12 @@ module.exports = {
   devtool: 'source-map',
 
   entry: path.resolve(__dirname, 'src', 'index.tsx'),
-  output: {},
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[chunkhash:6].js',
+    chunkFilename: '[name].[chunkhash:8].js',
+    publicPath: '/',
+  },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx'],
@@ -39,6 +46,20 @@ module.exports = {
           'sass-loader',
         ],
       },
+      {
+        test: /\.(png|jpg|gif|jpeg|webp|svg|eot|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10240, //10K
+              esModule: false,
+              name: '[name]_[hash:6].[ext]',
+            },
+          },
+        ],
+        exclude: /node_modules/,
+      },
     ],
   },
 
@@ -50,4 +71,22 @@ module.exports = {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    port: '9000',
+    compress: true,
+    hot: true,
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+      filename: 'index.html', //打包后的文件名
+      minify: {
+        removeAttributeQuotes: false, //是否删除属性的双引号
+        collapseWhitespace: false, //是否折叠空白
+      },
+      // hash: true //是否加上hash，默认是 false
+    }),
+  ],
 };
