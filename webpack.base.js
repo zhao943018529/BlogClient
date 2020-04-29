@@ -46,18 +46,12 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(tsx?|jsx?)$/,
+        test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: [
           'thread-loader',
           { loader: 'babel-loader', options: { cacheDirectory: true } },
         ],
-      },
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        loader: 'source-map-loader',
       },
       {
         test: /\.s(a|c)ss$/,
@@ -78,14 +72,43 @@ module.exports = {
       {
         test: /\.(jpeg|jpg|png|gif)$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            name: '[name]-[hash:7].[ext]',
-            outputPath: 'images/',
-            limit: 4 * 1024,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:7].[ext]',
+              outputPath: 'images/',
+              limit: 4 * 1024,
+            },
           },
-        },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              // 压缩 jpeg 的配置
+              mozjpeg: {
+                progressive: true,
+                quality: 65,
+              },
+              // 使用 imagemin**-optipng 压缩 png，enable: false 为关闭
+              optipng: {
+                enabled: false,
+              },
+              // 使用 imagemin-pngquant 压缩 png
+              pngquant: {
+                quality: '65-90',
+                speed: 4,
+              },
+              // 压缩 gif 的配置
+              gifsicle: {
+                interlaced: false,
+              },
+              // 开启 webp，会把 jpg 和 png 图片压缩为 webp 格式
+              webp: {
+                quality: 75,
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(eot|ttf|svg)$/,
@@ -101,10 +124,10 @@ module.exports = {
   // assume a corresponding global variable exists and use that instead.
   // This is important because it allows us to avoid bundling all of our
   // dependencies, which allows browsers to cache those libraries between builds.
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
+  // externals: {
+  //   react: 'React',
+  //   'react-dom': 'ReactDOM',
+  // },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
