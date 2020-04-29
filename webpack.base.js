@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const MiniCssExtractLoader = require('mini-css-extract-plugin');
+// const MiniCssExtractLoader = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const threadLoader = require('thread-loader');
 
@@ -34,12 +34,17 @@ module.exports = {
   entry: path.resolve(__dirname, 'src', 'index.tsx'),
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[hash].js',
+    filename: '[name].[hash:6].js',
     chunkFilename: '[name].[chunkhash:8].js',
     publicPath: '/',
   },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
+    alias: {
+      src: path.resolve(__dirname, './src'),
+      assets: path.resolve(__dirname, './src/assets'),
+      components: path.resolve(__dirname, './src/components'),
+    },
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
 
@@ -54,22 +59,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.s(a|c)ss$/,
-        use: [
-          process.env.NODE_ENV ? 'style-loader' : MiniCssExtractLoader.loader,
-          {
-            loader: 'css-loader',
-            options: { modules: false, sourceMap: true, importLoaders: 1 },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.(jpeg|jpg|png|gif)$/,
         exclude: /node_modules/,
         use: [
@@ -81,33 +70,34 @@ module.exports = {
               limit: 4 * 1024,
             },
           },
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              // 压缩 jpeg 的配置
-              mozjpeg: {
-                progressive: true,
-                quality: 65,
-              },
-              // 使用 imagemin**-optipng 压缩 png，enable: false 为关闭
-              optipng: {
-                enabled: false,
-              },
-              // 使用 imagemin-pngquant 压缩 png
-              pngquant: {
-                quality: '65-90',
-                speed: 4,
-              },
-              // 压缩 gif 的配置
-              gifsicle: {
-                interlaced: false,
-              },
-              // 开启 webp，会把 jpg 和 png 图片压缩为 webp 格式
-              webp: {
-                quality: 75,
-              },
-            },
-          },
+          // TODO: 目前在window上会出错
+          // {
+          //   loader: 'image-webpack-loader',
+          //   options: {
+          //     // 压缩 jpeg 的配置
+          //     mozjpeg: {
+          //       progressive: true,
+          //       quality: 65,
+          //     },
+          //     // 使用 imagemin**-optipng 压缩 png，enable: false 为关闭
+          //     optipng: {
+          //       enabled: false,
+          //     },
+          //     // 使用 imagemin-pngquant 压缩 png
+          //     pngquant: {
+          //       quality: [0.65, 0.8],
+          //       speed: 4,
+          //     },
+          //     // 压缩 gif 的配置
+          //     gifsicle: {
+          //       interlaced: false,
+          //     },
+          //     // 开启 webp，会把 jpg 和 png 图片压缩为 webp 格式
+          //     webp: {
+          //       quality: 75,
+          //     },
+          //   },
+          // },
         ],
       },
       {

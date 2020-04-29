@@ -17,24 +17,32 @@ module.exports = merge(baseConfig, {
       'react-dom': '@hot-loader/react-dom',
     },
   },
-  module:[
-    {
-      test: /\.s(a|c)ss$/,
-      use: [
-        process.env.NODE_ENV ? 'style-loader' : MiniCssExtractLoader.loader,
-        {
-          loader: 'css-loader',
-          options: { modules: false, sourceMap: true, importLoaders: 1 },
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
+  module: {
+    rules: [
+      {
+        test: /\.s(a|c)ss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: true,
+              reloadAll: true,
+            },
           },
-        },
-      ],
-    },
-  ],
+          {
+            loader: 'css-loader',
+            options: { modules: false, sourceMap: true, importLoaders: 1 },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     port: '9000',
@@ -63,3 +71,8 @@ module.exports = merge(baseConfig, {
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
   ],
 });
+// "husky": {
+//   "hooks": {
+//     "pre-commit": "lint-staged"
+//   }
+// },
