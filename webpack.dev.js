@@ -71,8 +71,3 @@ module.exports = merge(baseConfig, {
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
   ],
 });
-// "husky": {
-//   "hooks": {
-//     "pre-commit": "lint-staged"
-//   }
-// },
