@@ -101,8 +101,9 @@ module.exports = {
         ],
       },
       {
-        test: /\.(eot|ttf|svg)$/,
-        exclude: /node_modules/,
+        test: /\.(eot|ttf|svg|woff|woff2)$/,
+        // exclude: /node_modules/,
+        // include: [],
         use: {
           loader: 'file-loader',
         },

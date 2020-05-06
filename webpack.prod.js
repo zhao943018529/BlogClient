@@ -13,6 +13,7 @@ module.exports = merge(baseConfig, {
     rules: [
       {
         test: /\.s(a|c)ss$/,
+        sideEffects: true,
         use: [
           MiniCssExtractPlugin.loader,
           {

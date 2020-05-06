@@ -31,5 +31,24 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    'comma-dangle': ['error', 'only-multiline'],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.ts', '.tsx'],
+      },
+    },
+    'import/extensions': ['.ts', '.tsx'],
   },
 };

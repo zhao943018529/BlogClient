@@ -20,7 +20,19 @@ module.exports = merge(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.s(a|c)ss$/,
+        test: /\.css$/,
+        sideEffects: true,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: { modules: false, sourceMap: true, importLoaders: 1 },
+          },
+        ],
+      },
+      {
+        test: /\.(sa|sc)ss$/,
+        sideEffects: true,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
