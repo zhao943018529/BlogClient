@@ -6,11 +6,14 @@ import {
   Box,
   Input,
   Checkbox,
+  IconButton,
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { updateTodo, removeTodo } from '../../../store/todo/actionTypes';
+
+const { useCallback } = React;
 
 const BoxWrapper = styled(Box)`
   display: flex;
@@ -19,6 +22,10 @@ const BoxWrapper = styled(Box)`
 `;
 const InputWrapper = styled(Input)`
   width: 100%;
+`;
+
+const ListItemTextWrapper = styled(ListItemText)`
+  cursor: pointer;
 `;
 const { useState } = React;
 interface ITodoItemProps extends React.Props<any> {
@@ -34,7 +41,7 @@ export default function TodoItem(props: ITodoItemProps) {
   const updateName = () => {
     dispatch({ type: updateTodo, payload: { id: todo.id, name } });
     setName(name);
-    toggleEdit(!editing);
+    toggleEdit(false);
   };
 
   const toggleChecked = () => {
@@ -44,9 +51,12 @@ export default function TodoItem(props: ITodoItemProps) {
     });
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setName(event.target.value);
+    },
+    [setName]
+  );
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
@@ -74,11 +84,13 @@ export default function TodoItem(props: ITodoItemProps) {
           <ListItemIcon>
             <Checkbox checked={todo.completed} onChange={toggleChecked} />
           </ListItemIcon>
-          <ListItemText
+          <ListItemTextWrapper
             onClick={() => toggleEdit(!editing)}
             primary={todo.name}
           />
-          <Delete onClick={handleDelete} />
+          <IconButton onClick={handleDelete}>
+            <Delete />
+          </IconButton>
         </BoxWrapper>
       )}
     </ListItem>

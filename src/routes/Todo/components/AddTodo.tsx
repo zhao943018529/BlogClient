@@ -34,15 +34,20 @@ export default function AddTodo() {
     [dispatch, value]
   );
 
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(event.target.value);
+    },
+    [setValue]
+  );
+
   return (
     <form onSubmit={handleSubmit}>
       <TextField
         fullWidth
         placeholder='Add todo'
         value={value}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setValue(event.target.value);
-        }}
+        onChange={handleChange}
       />
       <SubmitButton />
     </form>

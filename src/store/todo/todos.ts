@@ -16,7 +16,7 @@ export default function todos(state: ITodo[] = initialState, action: IAction) {
       return [
         ...state,
         {
-          id: state.length,
+          id: _.uniqueId('todo'),
           name: action.payload.name,
           completed: false,
           createTime: Date.now(),

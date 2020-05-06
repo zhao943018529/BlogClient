@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 import { updateFilter } from '../../../store/todo/actionTypes';
+
+const { useContext } = React;
 
 interface IFilterItemProps {
   icon: React.ReactElement<any>;
@@ -12,24 +14,27 @@ interface IFilterItemProps {
 }
 
 interface ListItemProps extends React.HTMLAttributes<any> {
-  actived: number;
+  color: string;
 }
 
 const ListItemWrapper = styled(ListItem)<ListItemProps>`
   cursor: pointer;
-  color: ${(props) => (props.actived ? 'red' : 'a6a6a6')};
+  color: ${(props) => props.color};
   & + & {
     border-left: 1px solid #c8c8c8;
   }
 `;
 
-const ListItemIconWrapper = styled(ListItemIcon)<{ actived: number }>`
-  color: ${(props) => (props.actived ? 'red' : 'rgba(0, 0, 0, 0.54)')};
+const ListItemIconWrapper = styled(ListItemIcon)<{ color: string }>`
+  && {
+    color: ${(props) => props.color};
+  }
 `;
 
 export default function FilterItem(props: IFilterItemProps) {
   // eslint-disable-next-line object-curly-newline
   const { icon, name, filter, isActive } = props;
+  const theme = useContext(ThemeContext);
 
   const dispatch = useDispatch();
   const handleClick = () => {
@@ -37,8 +42,14 @@ export default function FilterItem(props: IFilterItemProps) {
   };
 
   return (
-    <ListItemWrapper button onClick={handleClick} actived={isActive ? 1 : 0}>
-      <ListItemIconWrapper actived={isActive ? 1 : 0}>
+    <ListItemWrapper
+      button
+      onClick={handleClick}
+      color={isActive ? theme.palette.primary.main : '#a6a6a6'}
+    >
+      <ListItemIconWrapper
+        color={isActive ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.54)'}
+      >
         {icon}
       </ListItemIconWrapper>
       <ListItemText primary={name}></ListItemText>

@@ -5,9 +5,17 @@ import { Provider } from 'react-redux';
 // import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router } from 'react-router-dom';
 import 'typeface-roboto';
-import { List, Paper } from '@material-ui/core';
+import {
+  List,
+  Paper,
+  createMuiTheme,
+  ThemeProvider,
+  StylesProvider,
+} from '@material-ui/core';
 import { Inbox, Schedule } from '@material-ui/icons';
-import styled from 'styled-components';
+import styled, {
+  ThemeProvider as StyledThemeProvider,
+} from 'styled-components';
 import ListItemLink from './components/ListItemLink';
 import reducers from './store';
 
@@ -15,6 +23,18 @@ import Routes from './routes';
 
 const store = createStore(reducers);
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#292961',
+    },
+    secondary: {
+      // This is green.A700 as hex.
+      main: '#11cb5f',
+    },
+  },
+});
+console.log(theme);
 // const { useState } = React;
 
 // import ReactDOM from 'react-dom';
@@ -27,19 +47,29 @@ const RootContainer = styled.div`
 
 function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        <RootContainer>
-          <Paper elevation={0}>
-            <List>
-              <ListItemLink to='/' icon={<Inbox />} primary='home' />
-              <ListItemLink to='/todo' icon={<Schedule />} primary='TodoApp' />
-            </List>
-          </Paper>
-          <Routes />
-        </RootContainer>
-      </Router>
-    </Provider>
+    <StylesProvider injectFirst>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <StyledThemeProvider theme={theme}>
+            <Router>
+              <RootContainer>
+                <Paper elevation={0}>
+                  <List>
+                    <ListItemLink to='/' icon={<Inbox />} primary='home' />
+                    <ListItemLink
+                      to='/todo'
+                      icon={<Schedule />}
+                      primary='TodoApp'
+                    />
+                  </List>
+                </Paper>
+                <Routes />
+              </RootContainer>
+            </Router>
+          </StyledThemeProvider>
+        </ThemeProvider>
+      </Provider>
+    </StylesProvider>
   );
 }
 
