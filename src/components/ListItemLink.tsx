@@ -1,15 +1,41 @@
 /* eslint-disable react/display-name */
 import * as React from 'react';
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  createStyles,
+  makeStyles,
+  // eslint-disable-next-line no-unused-vars
+  Theme,
+} from '@material-ui/core';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 
 interface ILinkProps {
   icon: React.ReactElement<any>;
-  to: String;
+  to: string;
   primary: String;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles<string, { match: boolean }>({
+    root: {
+      color: (props) => (props.match ? '#FFFFFF' : theme.palette.text.primary),
+      backgroundColor: (props) =>
+        props.match
+          ? theme.palette.primary.light
+          : theme.palette.background.paper,
+      '&:hover': {
+        backgroundColor: (props) =>
+          props.match ? theme.palette.primary.main : theme.palette.action.hover,
+      },
+    },
+  })
+);
+
 export default function ListItemLink({ icon, to, primary }: ILinkProps) {
+  const match = useRouteMatch({ path: to, exact: true });
+  const classes = useStyles({ match: !!match });
   const renderLink = React.useMemo<React.FunctionComponent<any>>(
     () =>
       // eslint-disable-next-line implicit-arrow-linebreak
@@ -20,7 +46,7 @@ export default function ListItemLink({ icon, to, primary }: ILinkProps) {
   );
 
   return (
-    <ListItem button component={renderLink}>
+    <ListItem button component={renderLink} className={classes.root}>
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText primary={primary} />
     </ListItem>
