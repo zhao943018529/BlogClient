@@ -6,17 +6,16 @@ import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import 'typeface-roboto';
 import {
-  List,
-  Paper,
+  // List,
+  // Paper,
   createMuiTheme,
   ThemeProvider,
   StylesProvider,
 } from '@material-ui/core';
-import { Inbox, Schedule } from '@material-ui/icons';
-import styled, {
-  ThemeProvider as StyledThemeProvider,
-} from 'styled-components';
-import ListItemLink from './components/ListItemLink';
+// import { Inbox, Schedule } from '@material-ui/icons';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+// import ListItemLink from './components/ListItemLink';
+import Layout from './components/Layout';
 import reducers from './store';
 
 import Routes from './routes';
@@ -34,16 +33,16 @@ const theme = createMuiTheme({
     },
   },
 });
-console.log(theme);
+// console.log(theme);
 // const { useState } = React;
 
 // import ReactDOM from 'react-dom';
 // import { AppContainer } from 'react-hot-loader';
 
-const RootContainer = styled.div`
-  width: 800px;
-  margin: 0 auto;
-`;
+// const RootContainer = styled.div`
+//   width: 800px;
+//   margin: 0 auto;
+// `;
 
 function App() {
   return (
@@ -52,7 +51,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <StyledThemeProvider theme={theme}>
             <Router>
-              <RootContainer>
+              {/* <RootContainer>
                 <Paper elevation={0}>
                   <List>
                     <ListItemLink to='/' icon={<Inbox />} primary='home' />
@@ -64,7 +63,10 @@ function App() {
                   </List>
                 </Paper>
                 <Routes />
-              </RootContainer>
+              </RootContainer> */}
+              <Layout>
+                <Routes />
+              </Layout>
             </Router>
           </StyledThemeProvider>
         </ThemeProvider>
