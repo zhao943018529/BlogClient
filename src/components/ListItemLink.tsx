@@ -4,6 +4,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Hidden,
   createStyles,
   makeStyles,
   // eslint-disable-next-line no-unused-vars
@@ -14,7 +15,8 @@ import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 interface ILinkProps {
   icon: React.ReactElement<any>;
   to: string;
-  primary: String;
+  primary: string;
+  collapse?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,7 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ListItemLink({ icon, to, primary }: ILinkProps) {
+export default function ListItemLink({
+  icon,
+  to,
+  primary,
+  collapse,
+}: ILinkProps) {
   const match = useRouteMatch({ path: to, exact: true });
   const classes = useStyles({ match: !!match });
   const renderLink = React.useMemo<React.FunctionComponent<any>>(
@@ -48,7 +55,9 @@ export default function ListItemLink({ icon, to, primary }: ILinkProps) {
   return (
     <ListItem button component={renderLink} className={classes.root}>
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-      <ListItemText primary={primary} />
+      <Hidden smDown smUp={collapse}>
+        <ListItemText primary={primary} />
+      </Hidden>
     </ListItem>
   );
 }

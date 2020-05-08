@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 // import styled from 'styled-components';
 
 import {
@@ -9,27 +10,30 @@ import {
 } from '@material-ui/core';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import { getCollapse } from '../store/common';
 
+const drawerWidthSM = 100;
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+  createStyles<string, { collapse: boolean }>({
     root: {
       display: 'flex',
     },
     drawerPaper: {
-      width: drawerWidth,
+      width: (props) => (props.collapse ? drawerWidthSM : drawerWidth),
     },
     toolbar: theme.mixins.toolbar,
     drawer: {
       [theme.breakpoints.up('md')]: {
-        width: drawerWidth,
+        width: (props) => (props.collapse ? drawerWidthSM : drawerWidth),
         flexShrink: 0,
       },
     },
     appBar: {
       [theme.breakpoints.up('md')]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+        width: (props) =>
+          `calc(100% - ${props.collapse ? drawerWidthSM : drawerWidth}px)`,
+        marginLeft: (props) => (props.collapse ? drawerWidthSM : drawerWidth),
       },
     },
     content: {
@@ -48,7 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const { useState } = React;
 
 export default function Layout(props: React.Props<any>) {
-  const classes = useStyles();
+  const collapse = useSelector(getCollapse);
+  const classes = useStyles({ collapse });
   const [open, setOpen] = useState(false);
 
   const toggleExpand = () => {

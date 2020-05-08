@@ -34,6 +34,10 @@ const GrowDiv = styled.div`
   flex: 1;
 `;
 
+const ActionDiv = styled.div`
+  color: #ffffff;
+`;
+
 export default function Header(props: IHeaderProps) {
   const { classes, toggleSidebar } = props;
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -56,14 +60,14 @@ export default function Header(props: IHeaderProps) {
           Home
         </Typography>
         <GrowDiv />
-        <div>
-          <IconButton>
+        <ActionDiv>
+          <IconButton color='inherit'>
             <Mail />
           </IconButton>
-          <IconButton onClick={handleClick}>
+          <IconButton color='inherit' onClick={handleClick}>
             <AccountCircle />
           </IconButton>
-        </div>
+        </ActionDiv>
       </Toolbar>
       <Menu
         id='customized-menu'

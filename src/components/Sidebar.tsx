@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
   Hidden,
@@ -15,9 +16,14 @@ import {
   Mail as MailIcon,
   Schedule as ScheduleIcon,
   KeyboardArrowLeft,
+  KeyboardArrowRight,
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
+// import useCollapse from './useCollapse';
+import { getCollapse, toggleActionType } from '../store/common/index';
+
+const { useCallback } = React;
 
 interface IClasses {
   toolbar: string;
@@ -39,13 +45,18 @@ const SideTop = styled.div`
 
 export default function Sidebar(props: ISideBarProps) {
   const { classes, toggleSidebar, open } = props;
+  const dispatch = useDispatch();
+  const collapse = useSelector(getCollapse);
+  const toggleCollapse = useCallback(() => {
+    dispatch({ type: toggleActionType, payload: !collapse });
+  }, [dispatch, collapse]);
 
   const drawer = (
     <div>
       <SideTop className={classes && classes.toolbar}>
         <Hidden smDown>
-          <IconButton>
-            <KeyboardArrowLeft />
+          <IconButton onClick={toggleCollapse}>
+            {collapse ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
           </IconButton>
         </Hidden>
       </SideTop>
@@ -60,6 +71,7 @@ export default function Sidebar(props: ISideBarProps) {
             to={item.to}
             primary={item.primary}
             icon={item.icon}
+            collapse={collapse}
           />
         ))}
       </List>
@@ -70,7 +82,9 @@ export default function Sidebar(props: ISideBarProps) {
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <Hidden smDown smUp={collapse}>
+              <ListItemText primary={text} />
+            </Hidden>
           </ListItem>
         ))}
       </List>
