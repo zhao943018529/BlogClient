@@ -20,7 +20,6 @@ import {
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
-// import useCollapse from './useCollapse';
 import { getCollapse, toggleActionType } from '../store/common/index';
 
 const { useCallback } = React;
@@ -55,7 +54,7 @@ export default function Sidebar(props: ISideBarProps) {
     <div>
       <SideTop className={classes && classes.toolbar}>
         <Hidden smDown>
-          <IconButton onClick={toggleCollapse}>
+          <IconButton onClick={toggleCollapse} className='layout-side-collapse'>
             {collapse ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
           </IconButton>
         </Hidden>

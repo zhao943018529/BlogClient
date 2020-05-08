@@ -4,6 +4,7 @@ webpack.*.js
 tsconfig.json
 postcss.config.js
 jest.config.js
+__test__/**/*
 
 // TODO: remove
 pptr.js
