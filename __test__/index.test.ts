@@ -1,16 +1,29 @@
 import puppeteer, { Page, Browser } from 'puppeteer';
 
+jest.setTimeout(10000);
+
 let page: Page;
 let browser: Browser;
 
-describe('Google', () => {
+describe('Collapse', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({
       headless: false,
-      slowMo: 1000,
+      slowMo: 200,
     });
+  });
+
+  afterAll(async () => {
+    await browser.close();
+  });
+
+  beforeEach(async () => {
     page = await browser.newPage();
     page.setViewport({ width: 1600, height: 1000 });
+  });
+
+  afterEach(async () => {
+    await page.close();
   });
 
   // afterAll(async () => {
@@ -27,5 +40,7 @@ describe('Google', () => {
     await page.click('.layout-side-collapse');
     await page.waitFor(1000);
     await page.click('.layout-side-collapse');
+    await page.setViewport({ width: 600, height: 1000 });
+    await page.waitFor(1000);
   });
 });

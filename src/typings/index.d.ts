@@ -17,6 +17,17 @@ interface ITodoAppProps {
   visibilityFilter: FilterType;
 }
 
+interface IThemeProps {
+  primary: string;
+  secondary: string;
+}
+
+interface ICommonProps {
+  collapse: boolean;
+  theme: IThemeProps;
+}
+
 interface IStoreState {
   todo: ITodoAppProps;
+  common: ICommonProps;
 }

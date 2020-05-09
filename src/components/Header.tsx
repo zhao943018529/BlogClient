@@ -9,6 +9,9 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@material-ui/core';
 import {
   Menu as MenuIcon,
@@ -16,7 +19,9 @@ import {
   Mail,
   Settings,
   Facebook,
+  ColorLens,
 } from '@material-ui/icons';
+import Skin from './Skin';
 
 const { useState } = React;
 
@@ -50,6 +55,12 @@ export default function Header(props: IHeaderProps) {
     setAnchor(null);
   };
 
+  const [open, setOpen] = useState(false);
+
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
+
   return (
     <AppBar position='fixed' className={classes && classes.root}>
       <Toolbar>
@@ -66,6 +77,9 @@ export default function Header(props: IHeaderProps) {
           </IconButton>
           <IconButton color='inherit' onClick={handleClick}>
             <AccountCircle />
+          </IconButton>
+          <IconButton color='inherit' onClick={() => setOpen(true)}>
+            <ColorLens />
           </IconButton>
         </ActionDiv>
       </Toolbar>
@@ -98,6 +112,12 @@ export default function Header(props: IHeaderProps) {
           <ListItemText primary='Facebook' />
         </MenuItem>
       </Menu>
+      <Dialog open={open} onClose={handleDialogClose}>
+        <DialogTitle>Theme</DialogTitle>
+        <DialogContent>
+          <Skin />
+        </DialogContent>
+      </Dialog>
     </AppBar>
   );
 }
