@@ -6,6 +6,7 @@ const { Suspense } = React;
 
 const Home = React.lazy(() => import('./Home/index'));
 const Todo = React.lazy(() => import('./Todo/index'));
+const Todo2 = React.lazy(() => import('./Todo2/index'));
 
 export default function routes() {
   return (
@@ -16,6 +17,9 @@ export default function routes() {
         </Route>
         <Route path='/todo'>
           <Todo />
+        </Route>
+        <Route path={['/todo2/:filter', '/todo2']} component={Todo2}>
+          <Todo2 />
         </Route>
       </Switch>
     </Suspense>

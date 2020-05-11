@@ -2,7 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-// import { hot } from 'react-hot-loader/root';
+import { AppContainer } from 'react-hot-loader';
 import 'typeface-roboto';
 import { StylesProvider } from '@material-ui/core';
 import App from './app';
@@ -11,12 +11,20 @@ import reducers from './store';
 const store = createStore(reducers);
 
 const render = () => {
-  ReactDOM.render(
+  const app = (
     <StylesProvider injectFirst>
       <Provider store={store}>
         <App />
       </Provider>
-    </StylesProvider>,
+    </StylesProvider>
+  );
+
+  ReactDOM.render(
+    process.env.NODE_ENV === 'development' ? (
+      <AppContainer>{app}</AppContainer>
+    ) : (
+      app
+    ),
     document.getElementById('root')
   );
 };

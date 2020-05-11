@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -6,10 +7,10 @@ import {
   Drawer,
   Divider,
   List,
-  ListItemIcon,
   ListItem,
   ListItemText,
   IconButton,
+  useTheme,
 } from '@material-ui/core';
 import {
   Inbox as InboxIcon,
@@ -17,12 +18,13 @@ import {
   Schedule as ScheduleIcon,
   KeyboardArrowLeft,
   KeyboardArrowRight,
+  AllInbox,
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
 import { getCollapse, toggleActionType } from '../store/common/index';
 
-const { useCallback } = React;
+const { useCallback, useEffect } = React;
 
 interface IClasses {
   toolbar: string;
@@ -43,12 +45,31 @@ const SideTop = styled.div`
 `;
 
 export default function Sidebar(props: ISideBarProps) {
+  const theme = useTheme();
   const { classes, toggleSidebar, open } = props;
   const dispatch = useDispatch();
   const collapse = useSelector(getCollapse);
   const toggleCollapse = useCallback(() => {
     dispatch({ type: toggleActionType, payload: !collapse });
   }, [dispatch, collapse]);
+
+  const handleResize = useCallback(
+    _.throttle(() => {
+      if (window.innerWidth < theme.breakpoints.values.md) {
+        dispatch({ type: toggleActionType, payload: true });
+      }
+    }, 150),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleResize]);
 
   const drawer = (
     <div>
@@ -62,8 +83,9 @@ export default function Sidebar(props: ISideBarProps) {
       <Divider />
       <List>
         {[
-          { to: '/', primary: 'Home', icon: <InboxIcon /> },
+          { to: '/', primary: 'Home', exact: true, icon: <InboxIcon /> },
           { to: '/todo', primary: 'MyTodos', icon: <ScheduleIcon /> },
+          { to: '/todo2', primary: 'TodosRouter', icon: <AllInbox /> },
         ].map((item) => (
           <ListItemLink
             key={item.to}
@@ -71,6 +93,7 @@ export default function Sidebar(props: ISideBarProps) {
             primary={item.primary}
             icon={item.icon}
             collapse={collapse}
+            exact={item.exact}
           />
         ))}
       </List>
@@ -78,9 +101,9 @@ export default function Sidebar(props: ISideBarProps) {
       <List>
         {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>
+            <IconButton>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
+            </IconButton>
             <Hidden smDown smUp={collapse}>
               <ListItemText primary={text} />
             </Hidden>

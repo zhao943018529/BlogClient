@@ -12,7 +12,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import { getCollapse } from '../store/common';
 
-const drawerWidthSM = 100;
+const drawerWidthSM = 80;
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles<string, { collapse: boolean }>({

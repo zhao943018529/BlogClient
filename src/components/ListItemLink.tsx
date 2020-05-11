@@ -1,10 +1,11 @@
 /* eslint-disable react/display-name */
 import * as React from 'react';
+import styled from 'styled-components';
 import {
   ListItem,
-  ListItemIcon,
   ListItemText,
   Hidden,
+  IconButton,
   createStyles,
   makeStyles,
   // eslint-disable-next-line no-unused-vars
@@ -16,8 +17,13 @@ interface ILinkProps {
   icon: React.ReactElement<any>;
   to: string;
   primary: string;
+  exact?: boolean;
   collapse?: boolean;
 }
+
+const ListItemTextWrapper = styled(ListItemText)`
+  margin-left: 8px;
+`;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles<string, { match: boolean }>({
@@ -40,8 +46,9 @@ export default function ListItemLink({
   to,
   primary,
   collapse,
+  exact,
 }: ILinkProps) {
-  const match = useRouteMatch({ path: to, exact: true });
+  const match = useRouteMatch({ path: to, exact });
   const classes = useStyles({ match: !!match });
   const renderLink = React.useMemo<React.FunctionComponent<any>>(
     () =>
@@ -54,9 +61,9 @@ export default function ListItemLink({
 
   return (
     <ListItem button component={renderLink} className={classes.root}>
-      {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-      <Hidden smDown smUp={collapse}>
-        <ListItemText primary={primary} />
+      {icon ? <IconButton>{icon}</IconButton> : null}
+      <Hidden smDown mdUp={collapse}>
+        <ListItemTextWrapper primary={primary} />
       </Hidden>
     </ListItem>
   );
