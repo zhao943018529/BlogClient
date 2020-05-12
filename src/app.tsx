@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-// import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router } from 'react-router-dom';
 import 'typeface-roboto';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';

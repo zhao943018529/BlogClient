@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   AppBar,
@@ -20,6 +21,7 @@ import {
   Settings,
   Facebook,
   ColorLens,
+  Input as InputIcon,
 } from '@material-ui/icons';
 import Skin from './Skin';
 
@@ -61,6 +63,12 @@ export default function Header(props: IHeaderProps) {
     setOpen(false);
   };
 
+  const history = useHistory();
+
+  const handleLogin = () => {
+    history.push('/login');
+  };
+
   return (
     <AppBar position='fixed' className={classes && classes.root}>
       <Toolbar>
@@ -99,6 +107,12 @@ export default function Header(props: IHeaderProps) {
           horizontal: 'right',
         }}
       >
+        <MenuItem onClick={handleLogin}>
+          <ListItemIcon>
+            <InputIcon fontSize='small' />
+          </ListItemIcon>
+          <ListItemText primary='Sign in' />
+        </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <Settings fontSize='small' />

@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+// import { useDispatch } from 'react-redux';
 import {
   Container,
   Avatar,
@@ -58,9 +60,27 @@ const ButtonWrapper = styled(Button)`
 `;
 
 export default function Login() {
+  const history = useHistory();
+  // const dispatch = useDispatch();
+
   const [checked, setChecked] = React.useState(false);
   const handleCheck = () => {
     setChecked(!checked);
+  };
+
+  const [username, setUsername] = React.useState<string>('');
+
+  const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+  const [password, setPassword] = React.useState<string>('');
+
+  const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    history.push('/');
   };
 
   return (
@@ -73,8 +93,20 @@ export default function Login() {
           Sign in
         </Typography>
         <Form>
-          <TextFieldWrapper label='Email Address' required variant='outlined' />
-          <TextFieldWrapper label='Password' required variant='outlined' />
+          <TextFieldWrapper
+            value={username}
+            onChange={handleUsername}
+            label='Email Address'
+            required
+            variant='outlined'
+          />
+          <TextFieldWrapper
+            value={password}
+            onChange={handlePassword}
+            label='Password'
+            required
+            variant='outlined'
+          />
         </Form>
         <FormControlLabelWrapper
           control={
@@ -89,7 +121,11 @@ export default function Login() {
         />
       </Content>
       <ActionContainer>
-        <ButtonWrapper variant='contained' color='primary'>
+        <ButtonWrapper
+          onClick={handleSubmit}
+          variant='contained'
+          color='primary'
+        >
           SIGN IN
         </ButtonWrapper>
       </ActionContainer>
