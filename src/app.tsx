@@ -5,7 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import 'typeface-roboto';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import Layout from './components/Layout';
 
 import Routes from './routes';
 import { getTheme } from './store/common';
@@ -28,9 +27,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <StyledThemeProvider theme={theme}>
         <Router>
-          <Layout>
-            <Routes />
-          </Layout>
+          <Routes />
         </Router>
       </StyledThemeProvider>
     </ThemeProvider>
