@@ -1,4 +1,8 @@
-const loginUserSuccess = 'Login_User';
+export const loginUserSuccess = 'Login_User';
+
+export function getUser(state: IStoreState) {
+  return state.common.user;
+}
 
 const initializeUser = {
   userInfo: null,

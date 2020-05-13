@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-// import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   Container,
   Avatar,
@@ -14,6 +14,8 @@ import {
   Button,
 } from '@material-ui/core';
 import { EnhancedEncryption } from '@material-ui/icons';
+import getUserAction from '../../store/common/UserActionCreators';
+import { getUser } from '../../store/common/User';
 
 const Content = styled.div`
   display: flex;
@@ -61,7 +63,8 @@ const ButtonWrapper = styled(Button)`
 
 export default function Login() {
   const history = useHistory();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const user = useSelector(getUser, shallowEqual);
 
   const [checked, setChecked] = React.useState(false);
   const handleCheck = () => {
@@ -80,8 +83,15 @@ export default function Login() {
   };
 
   const handleSubmit = () => {
-    history.push('/');
+    dispatch(getUserAction(username, password));
   };
+
+  React.useEffect(() => {
+    if (user.userInfo != null) {
+      console.log(user.userInfo);
+      history.push('/');
+    }
+  }, [user]);
 
   return (
     <Container maxWidth='xs'>

@@ -22,9 +22,14 @@ interface IThemeProps {
   secondary: string;
 }
 
+interface IUser {
+  userInfo: any;
+}
+
 interface ICommonProps {
   collapse: boolean;
   theme: IThemeProps;
+  user: IUser;
 }
 
 interface IStoreState {

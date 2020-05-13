@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import user from './User';
 
 export const toggleActionType = 'TOGGLE_COLLAPSE';
 
@@ -38,4 +39,5 @@ function themeReducer(state: IThemeProps = themeDefault, action: IAction) {
 export default combineReducers({
   collapse: collapseReducer,
   theme: themeReducer,
+  user,
 });

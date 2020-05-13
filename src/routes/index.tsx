@@ -19,7 +19,7 @@ export default function routes() {
         </Route>
         <Route path='/'>
           <Layout>
-            <switch>
+            <Switch>
               <Route exact path='/'>
                 <Home />
               </Route>
@@ -29,7 +29,7 @@ export default function routes() {
               <Route path={['/todo2/:filter', '/todo2']} component={Todo2}>
                 <Todo2 />
               </Route>
-            </switch>
+            </Switch>
           </Layout>
         </Route>
       </Switch>
