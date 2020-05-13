@@ -48,6 +48,14 @@ module.exports = {
       node: {
         extensions: ['.ts', '.tsx'],
       },
+      alias: {
+        map: [
+          ['components', './src/components'],
+          ['store', './src/store'],
+          ['assets', './src/assets'],
+        ],
+        extensions: ['.ts', '.tsx'],
+      },
     },
     'import/extensions': ['.ts', '.tsx'],
   },

@@ -88,7 +88,6 @@ export default function Login() {
 
   React.useEffect(() => {
     if (user.userInfo != null) {
-      console.log(user.userInfo);
       history.push('/');
     }
   }, [user]);
@@ -104,6 +103,7 @@ export default function Login() {
         </Typography>
         <Form>
           <TextFieldWrapper
+            className='login-username'
             value={username}
             onChange={handleUsername}
             label='Email Address'
@@ -111,6 +111,7 @@ export default function Login() {
             variant='outlined'
           />
           <TextFieldWrapper
+            className='password-username'
             value={password}
             onChange={handlePassword}
             label='Password'
@@ -132,6 +133,7 @@ export default function Login() {
       </Content>
       <ActionContainer>
         <ButtonWrapper
+          className='login-submit'
           onClick={handleSubmit}
           variant='contained'
           color='primary'
