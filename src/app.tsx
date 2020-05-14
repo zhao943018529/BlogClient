@@ -21,6 +21,7 @@ export default function App() {
       },
     },
   });
+  // window.$theme = theme;
 
   return (
     <ThemeProvider theme={theme}>

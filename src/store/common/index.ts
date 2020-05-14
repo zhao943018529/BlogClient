@@ -23,7 +23,7 @@ export function getTheme(state: IStoreState) {
 }
 
 const themeDefault: IThemeProps = {
-  primary: '#f44336',
+  primary: '#7c4dff',
   secondary: '#ff9100',
 };
 

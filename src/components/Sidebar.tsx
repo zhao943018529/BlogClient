@@ -20,6 +20,7 @@ import {
   KeyboardArrowRight,
   AllInbox,
   Edit,
+  Create as CreateIcon,
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
@@ -88,6 +89,7 @@ export default function Sidebar(props: ISideBarProps) {
           { to: '/todo', primary: 'MyTodos', icon: <ScheduleIcon /> },
           { to: '/todo2', primary: 'TodosRouter', icon: <AllInbox /> },
           { to: '/editor', primary: 'Editor', icon: <Edit /> },
+          { to: '/blog', primary: 'Blog', icon: <CreateIcon /> },
         ].map((item) => (
           <ListItemLink
             key={item.to}

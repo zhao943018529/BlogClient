@@ -50,11 +50,11 @@ module.exports = {
       },
       alias: {
         map: [
-          ['components', './src/components'],
-          ['store', './src/store'],
-          ['assets', './src/assets'],
+          ['@components', './src/components'],
+          ['@store', './src/store'],
+          ['@assets', './src/assets'],
         ],
-        extensions: ['.ts', '.tsx'],
+        extensions: ['.ts', '.tsx', '.jpg'],
       },
     },
     'import/extensions': ['.ts', '.tsx'],
