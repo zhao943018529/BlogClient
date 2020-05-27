@@ -22,17 +22,35 @@ interface IThemeProps {
   secondary: string;
 }
 
-interface IUser {
-  userInfo: any;
+interface IUserInfo {
+  user: IUser;
 }
 
 interface ICommonProps {
   collapse: boolean;
   theme: IThemeProps;
-  user: IUser;
+  user: IUserInfo;
 }
 
 interface IStoreState {
   todo: ITodoAppProps;
   common: ICommonProps;
+}
+
+interface IUser {
+  id: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+  phone: string;
+  createTime?: Date;
+  updateTime?: Date;
+}
+
+/** GraphQL types */
+interface IBaseResponse<T> {
+  code: String;
+  success: Boolean;
+  message?: String;
+  data: T;
 }

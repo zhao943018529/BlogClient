@@ -12,6 +12,7 @@ const Todo2 = React.lazy(() => import('./Todo2/index'));
 const Login = React.lazy(() => import('./Login/index'));
 const Editor = React.lazy(() => import('./Editor/index'));
 const Blog = React.lazy(() => import('./Blog/index'));
+const Signup = React.lazy(() => import('./Signup/index'));
 
 export default function routes() {
   return (
@@ -19,6 +20,9 @@ export default function routes() {
       <Switch>
         <Route path='/blog'>
           <Blog />
+        </Route>
+        <Route path='/signup'>
+          <Signup />
         </Route>
         <Route path='/login'>
           <Login />

@@ -58,13 +58,13 @@ module.exports = merge(baseConfig, {
   devServer: {
     host: '0.0.0.0',
     contentBase: path.join(__dirname, 'dist'),
-    port: '9000',
+    port: '13891',
     compress: true,
     hot: true,
     historyApiFallback: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:9001/',
+        target: 'http://10.11.1.140:13892',
         pathRewrite: {
           '^/api': '',
         },
@@ -84,3 +84,4 @@ module.exports = merge(baseConfig, {
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
   ],
 });
+//"pre-commit": "lint-staged"

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Container,
   Avatar,
@@ -13,9 +13,27 @@ import {
   Checkbox,
   Button,
 } from '@material-ui/core';
+import gql from 'graphql-tag';
+import { useLazyQuery } from '@apollo/react-hooks';
 import { EnhancedEncryption } from '@material-ui/icons';
-import getUserAction from '../../store/common/UserActionCreators';
-import { getUser } from '../../store/common/User';
+import { loginUserSuccess } from '@store/common/User';
+
+const UserQuery = gql`
+  query GetUer($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      code
+      success
+      data {
+        firstName
+        lastName
+        username
+        birthday
+        phone
+        createTime
+      }
+    }
+  }
+`;
 
 const Content = styled.div`
   display: flex;
@@ -61,10 +79,14 @@ const ButtonWrapper = styled(Button)`
     `}
 `;
 
+interface ILoginResponse {
+  login: IBaseResponse<IUser>;
+}
+
 export default function Login() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const user = useSelector(getUser, shallowEqual);
+  // const user = useSelector(getUser, shallowEqual);
 
   const [checked, setChecked] = React.useState(false);
   const handleCheck = () => {
@@ -81,16 +103,22 @@ export default function Login() {
   const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
+  const [loginUser, { data }] = useLazyQuery<
+    ILoginResponse,
+    { username: string; password: string }
+  >(UserQuery, { variables: { username, password } });
 
   const handleSubmit = () => {
-    dispatch(getUserAction(username, password));
+    loginUser();
+    // dispatch(getUserAction(username, password));
   };
 
   React.useEffect(() => {
-    if (user.userInfo != null) {
+    if (data?.login.success) {
+      dispatch({ type: loginUserSuccess, payload: data?.login.data });
       history.push('/');
     }
-  }, [user]);
+  }, [data]);
 
   return (
     <Container maxWidth='xs'>

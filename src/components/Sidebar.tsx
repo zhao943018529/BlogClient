@@ -21,6 +21,7 @@ import {
   AllInbox,
   Edit,
   Create as CreateIcon,
+  Pets as PetsIcon,
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
@@ -90,6 +91,7 @@ export default function Sidebar(props: ISideBarProps) {
           { to: '/todo2', primary: 'TodosRouter', icon: <AllInbox /> },
           { to: '/editor', primary: 'Editor', icon: <Edit /> },
           { to: '/blog', primary: 'Blog', icon: <CreateIcon /> },
+          { to: '/signup', primary: 'Signup', icon: <PetsIcon /> },
         ].map((item) => (
           <ListItemLink
             key={item.to}
