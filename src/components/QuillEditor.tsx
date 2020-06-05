@@ -1,14 +1,18 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
-import Quill from 'quill';
+import Quill, { TextChangeHandler, RangeStatic } from 'quill';
+import katex from 'katex';
+import hljs from 'highlight.js';
+import javascript from 'highlight.js/lib/languages/javascript';
+import cpp from 'highlight.js/lib/languages/cpp';
 
+import 'highlight.js/scss/github.scss';
+import 'katex/dist/katex.min.css';
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
 
-const { useRef, useEffect } = React;
+const { useRef, useEffect, useCallback } = React;
 
 const Container = styled.div`
   display: flex;
@@ -19,92 +23,115 @@ const EditorContent = styled.div`
   flex: 1;
 `;
 
-const UploadImage = gql`
-  mutation uploadImage($file: Upload!) {
-    uploadImage(file: $file) {
-      code
-      success
-      message
-      data
-    }
-  }
-`;
+export type InsertImageCallback = (url: string) => void;
 
-interface FileResponse {
-  uploadImage: IBaseResponse<any>;
+export type UploadImage = (file: File, callback: InsertImageCallback) => void;
+
+type Mode = 'Design' | 'Render';
+
+interface QuillEditorProps {
+  textChange?: TextChangeHandler;
+  uploadImage?: UploadImage;
+  className?: string;
+  mode?: Mode;
 }
 
-export default function QuillEditor() {
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
+export function QuillEditor({
+  textChange,
+  uploadImage,
+  className,
+  mode,
+}: QuillEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const editor = useRef<Quill>();
-  const [uploadFile, { data }] = useMutation<FileResponse, { file: File }>(
-    UploadImage
+  const changeRef = useRef<TextChangeHandler>(textChange || noop);
+
+  const insertImageCallback = useCallback<InsertImageCallback>(
+    (url: string) => {
+      const inst = editor.current;
+      if (inst != null) {
+        if (!inst.hasFocus) inst.focus();
+        const range = inst.getSelection() as RangeStatic;
+        inst.insertEmbed(range.index, 'image', url);
+      }
+    },
+    [editor]
   );
 
-  const handleAddImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      validity,
-      files: [file],
-    } = event.target;
-    if (validity) {
-      uploadFile({ variables: { file } });
-    }
-  };
-
-  const imageHandler = () => {
+  const imageHandler = useCallback(() => {
     const input = document.createElement('input');
     input.setAttribute('accept', 'image/*');
     input.setAttribute('type', 'file');
     input.click();
-    input.onchange = handleAddImage;
-  };
+    input.onchange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const { validity, files } = evt.target;
+      if (validity && files && uploadImage) {
+        uploadImage(files[0], insertImageCallback);
+      }
+    };
+  }, [uploadImage, editor]);
 
   useEffect(() => {
     if (editorRef.current != null) {
-      editor.current = new Quill(editorRef.current, {
+      hljs.registerLanguage('javascript', javascript);
+      hljs.registerLanguage('c++', cpp);
+      window.katex = katex;
+      let readOnly = true;
+      let toolbarConfig: any[] = [];
+      if (mode === 'Design') {
+        const Font = Quill.import('formats/font');
+        const fonts = ['sofia', 'slabo', 'roboto', 'inconsolata', 'ubuntu'];
+        Font.whitelist = fonts;
+        Quill.register(Font, true);
+        toolbarConfig = [
+          [{ font: fonts }, { size: [] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ color: [] }, { background: [] }],
+          [{ script: 'super' }, { script: 'sub' }],
+          [{ header: '1' }, { header: '2' }, 'blockquote', 'code-block'],
+          [
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { indent: '-1' },
+            { indent: '+1' },
+          ],
+          [{ direction: 'rtl' }, { align: [] }],
+          ['link', 'image', 'video', 'formula'],
+          ['clean'],
+        ];
+        readOnly = false;
+      }
+
+      const inst = new Quill(editorRef.current, {
         bounds: editorRef.current,
         modules: {
-          syntax: false,
-          toolbar: [
-            [
-              { font: ['sofia', 'slabo', 'roboto', 'inconsolata', 'ubuntu'] },
-              { size: [] },
-            ],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ color: [] }, { background: [] }],
-            [{ script: 'super' }, { script: 'sub' }],
-            [{ header: '1' }, { header: '2' }, 'blockquote', 'code-block'],
-            [
-              { list: 'ordered' },
-              { list: 'bullet' },
-              { indent: '-1' },
-              { indent: '+1' },
-            ],
-            [{ direction: 'rtl' }, { align: [] }],
-            ['link', 'image', 'video', 'formula'],
-            ['clean'],
-          ],
+          formula: true,
+          syntax: {
+            highlight: (text: string) => hljs.highlightAuto(text).value,
+          },
+          toolbar: toolbarConfig,
         },
-        theme: 'snow',
+        theme: readOnly ? 'bubble' : 'snow',
+        readOnly,
       });
-      const toolbar = editor.current.getModule('toolbar');
+      const toolbar = inst.getModule('toolbar');
       toolbar.addHandler('image', imageHandler);
+      inst.on('text-change', changeRef.current);
+      editor.current = inst;
     }
   }, []);
 
   useEffect(() => {
-    if (data?.uploadImage.success) {
-      const range = editor.current?.getSelection();
-      editor.current?.insertEmbed(
-        range?.index,
-        'image',
-        `http://10.11.1.140:13892${data.uploadImage.data}`
-      );
+    if (editor.current != null && textChange) {
+      changeRef.current = textChange;
     }
-  }, [data]);
+  }, [textChange]);
 
   return (
-    <Container>
+    <Container className={className}>
       <EditorContent ref={editorRef} />
     </Container>
   );

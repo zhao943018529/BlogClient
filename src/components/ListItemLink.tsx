@@ -8,8 +8,8 @@ import {
   IconButton,
   createStyles,
   makeStyles,
-  // eslint-disable-next-line no-unused-vars
   Theme,
+  useTheme,
 } from '@material-ui/core';
 import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 
@@ -28,7 +28,8 @@ const ListItemTextWrapper = styled(ListItemText)`
 const useStyles = makeStyles((theme: Theme) =>
   createStyles<string, { match: boolean }>({
     root: {
-      color: (props) => (props.match ? '#FFFFFF' : theme.palette.text.primary),
+      color: (props) =>
+        props.match ? theme.palette.common.white : theme.palette.text.primary,
       backgroundColor: (props) =>
         props.match
           ? theme.palette.primary.light
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: (props) =>
           props.match ? theme.palette.primary.main : theme.palette.action.hover,
       },
+    },
+    icon: {
+      color: (props) =>
+        props.match ? theme.palette.common.white : theme.palette.text.primary,
     },
   })
 );
@@ -61,7 +66,14 @@ export default function ListItemLink({
 
   return (
     <ListItem button component={renderLink} className={classes.root}>
-      {icon ? <IconButton>{icon}</IconButton> : null}
+      {icon ? (
+        <IconButton
+          size={collapse ? 'small' : 'medium'}
+          className={classes.icon}
+        >
+          {icon}
+        </IconButton>
+      ) : null}
       <Hidden smDown mdUp={collapse}>
         <ListItemTextWrapper primary={primary} />
       </Hidden>

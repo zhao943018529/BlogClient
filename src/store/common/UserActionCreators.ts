@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { Dispatch } from 'redux';
 import { loginUserSuccess } from './User';
 

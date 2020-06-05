@@ -39,14 +39,14 @@ const TopContainer = styled.div`
 `;
 
 const Form = styled.form`
-  ${({ theme }) => `
+  ${({ theme }: { theme: Theme }) => `
       margin-top: ${theme.spacing(2)}px;
       width: 100%;
   `}
 `;
 
 const NameTextContainer = styled.div`
-  ${({ theme }) => `
+  ${({ theme }: { theme: Theme }) => `
       margin:${theme.spacing(0.5)}px 0 ${theme.spacing(1)}px 0;
       display: flex;
 

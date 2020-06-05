@@ -24,6 +24,7 @@ module.exports = {
   },
   plugins: ['react-hooks', 'prettier', 'react', '@typescript-eslint'],
   rules: {
+    'no-unused-vars': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'linebreak-style': ['off', 'unix'],
     'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],
@@ -55,6 +56,8 @@ module.exports = {
           ['@components', './src/components'],
           ['@store', './src/store'],
           ['@assets', './src/assets'],
+          ['@controls', './src/controls'],
+          ['@utils', './src/utils'],
         ],
         extensions: ['.ts', '.tsx', '.jpg'],
       },

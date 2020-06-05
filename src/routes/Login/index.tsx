@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import {
   Container,
   Avatar,
-  // eslint-disable-next-line no-unused-vars
   Theme,
   Typography,
   TextField,
@@ -17,6 +17,8 @@ import gql from 'graphql-tag';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { EnhancedEncryption } from '@material-ui/icons';
 import { loginUserSuccess } from '@store/common/User';
+import { saveToken } from '@utils/token';
+import { useUserState } from '@utils/user';
 
 const UserQuery = gql`
   query GetUer($username: String!, $password: String!) {
@@ -24,6 +26,7 @@ const UserQuery = gql`
       code
       success
       data {
+        id
         firstName
         lastName
         username
@@ -84,6 +87,7 @@ interface ILoginResponse {
 }
 
 export default function Login() {
+  const { getUserInfo, loading } = useUserState();
   const history = useHistory();
   const dispatch = useDispatch();
   // const user = useSelector(getUser, shallowEqual);
@@ -109,16 +113,28 @@ export default function Login() {
   >(UserQuery, { variables: { username, password } });
 
   const handleSubmit = () => {
-    loginUser();
+    // loginUser();
     // dispatch(getUserAction(username, password));
+    axios
+      .post<{ code: number; data: any }>('/api/login', { username, password })
+      .then((res) => {
+        if (res.data.code === 200) {
+          saveToken(res.data.data);
+          getUserInfo();
+          // history.push('/');
+        }
+      });
   };
 
   React.useEffect(() => {
-    if (data?.login.success) {
-      dispatch({ type: loginUserSuccess, payload: data?.login.data });
+    // if (data?.login.success) {
+    //   // dispatch({ type: loginUserSuccess, payload: data?.login.data });
+
+    // }
+    if (loading) {
       history.push('/');
     }
-  }, [data]);
+  }, [loading]);
 
   return (
     <Container maxWidth='xs'>

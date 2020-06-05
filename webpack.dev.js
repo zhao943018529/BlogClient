@@ -64,9 +64,15 @@ module.exports = merge(baseConfig, {
     historyApiFallback: true,
     proxy: {
       '/api': {
-        target: 'http://10.11.1.140:13892',
+        target: 'http://10.11.1.145:13892',
         pathRewrite: {
           '^/api': '',
+        },
+      },
+      '/image': {
+        target: 'http://10.11.1.145:13892',
+        pathRewrite: {
+          '^/image': '',
         },
       },
     },

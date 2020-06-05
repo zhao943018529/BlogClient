@@ -6,7 +6,6 @@ import {
   ListItemText,
   makeStyles,
   createStyles,
-  // eslint-disable-next-line no-unused-vars
   Theme,
 } from '@material-ui/core';
 

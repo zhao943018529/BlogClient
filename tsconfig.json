@@ -16,7 +16,9 @@
     "paths": {
       "@assets/*": ["./assets/*"],
       "@components/*": ["./components/*"],
-      "@store/*": ["./store/*"]
+      "@store/*": ["./store/*"],
+      "@controls/*": ["./controls/*"],
+      "@utils/*": ["./utils/*"]
     }
   },
   "include": ["src/**/*"],

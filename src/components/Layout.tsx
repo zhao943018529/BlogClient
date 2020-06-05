@@ -2,17 +2,12 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 // import styled from 'styled-components';
 
-import {
-  makeStyles,
-  // eslint-disable-next-line no-unused-vars
-  Theme,
-  createStyles,
-} from '@material-ui/core';
+import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { getCollapse } from '../store/common';
 
-const drawerWidthSM = 80;
+const drawerWidthSM = 62;
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles<string, { collapse: boolean }>({
