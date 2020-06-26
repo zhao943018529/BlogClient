@@ -1,14 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import { Input, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 import {
   QuillEditor,
   UploadImage as IUploadImage,
 } from '@components/QuillEditor';
+import Progress from '@components/Progress';
 import TagManager from './components/TagManager';
-// import Quill, { RangeStatic } from 'quill';
 
 const UploadImage = gql`
   mutation uploadImage($file: Upload!) {
@@ -18,6 +19,26 @@ const UploadImage = gql`
       message
       data
     }
+  }
+`;
+
+const GET_ARTICLE = gql`
+  query GetArticle($id:String){
+    getArticle(id:$id){
+        id
+        title
+        createTime
+        updateTime
+        author {
+          id
+          username
+          firstName
+          lastName
+        }
+        tags {
+          id
+          title
+        }
   }
 `;
 
@@ -54,6 +75,14 @@ export default function Editor() {
     setTitle(event.target.value);
   };
 
+  const params = useParams<{ id: string }>();
+  const { data, loading } = useQuery<{ getArticle: Article }, { id: string }>(
+    GET_ARTICLE,
+    {
+      skip: !params.id,
+    }
+  );
+
   const [article, setArticle] = React.useState('');
 
   const [uploadFile] = useMutation<FileResponse, { file: File }>(UploadImage);
@@ -61,7 +90,7 @@ export default function Editor() {
   const handleAddImage = useCallback<IUploadImage>(
     (file: File, callback: (url: string) => void) => {
       uploadFile({ variables: { file } })
-        .then((data) => `/image${data.data?.uploadImage.data}`)
+        .then((res) => `/image${res.data?.uploadImage.data}`)
         .then(callback);
     },
     []
@@ -82,12 +111,17 @@ export default function Editor() {
         onChange={titleChange}
       />
       <TagManager onChange={setValues} values={values} />
-      <QuillEditor
-        className={classes.editor}
-        textChange={textChange}
-        uploadImage={handleAddImage}
-        mode='Design'
-      />
+      {loading ? (
+        <Progress />
+      ) : (
+        <QuillEditor
+          value={data?.getArticle.content}
+          className={classes.editor}
+          textChange={textChange}
+          uploadImage={handleAddImage}
+          mode='Design'
+        />
+      )}
     </Container>
   );
 }

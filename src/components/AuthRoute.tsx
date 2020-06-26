@@ -2,18 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Backdrop, CircularProgress, Theme } from '@material-ui/core';
 import { RouteProps, Route, Redirect } from 'react-router-dom';
-import { useSelector, shallowEqual } from 'react-redux';
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { getUser } from '@store/common/User';
-import gql from 'graphql-tag';
-
-const GetUserInfo = gql`
-  query GetUserInfo {
-    userInfo @client {
-      username
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { USER_LOGIN } from '@graphql/user';
 
 // const GetRemoteUserInfo = gql`
 //   query GetUserInfo {
@@ -34,7 +24,8 @@ const ThemeBackdrop = styled(Backdrop)`
   `}
 `;
 
-export default function AuthRoute(props: RouteProps) {
+export default function AuthRoute({ children, ...rest }: RouteProps) {
+  const { data } = useQuery<{ isLoggedIn: boolean }>(USER_LOGIN);
   // const user = useSelector(getUser, shallowEqual);
   // const [getUserInfo, { loading, data, client }] = useLazyQuery<{
   //   getUserInfo: any;
@@ -58,17 +49,12 @@ export default function AuthRoute(props: RouteProps) {
   //     </ThemeBackdrop>
   //   );
   // }
-  const children = props.children;
-  delete props.children;
 
   return (
     <Route
-      {...props}
+      {...rest}
       render={() => {
-        const {
-          data: { userInfo },
-        } = useQuery<{ userInfo: any }>(GetUserInfo);
-        if (userInfo != null) {
+        if (data && data.isLoggedIn) {
           return children;
         } else {
           return <Redirect to='/login' />;

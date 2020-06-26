@@ -1,45 +1,36 @@
 import * as React from 'react';
-import { useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { useLocation } from 'react-router-dom';
-import gql from 'graphql-tag';
+import { useLazyQuery, useQuery, useApolloClient } from '@apollo/client';
+import { removeToken } from '@utils/token';
+import { useHistory } from 'react-router-dom';
+import { GET_USERINFO, GET_LOCAL_USERINFO } from '@graphql/user';
 
-const GetUserInfo = gql`
-  query GetUserInfo {
-    userInfo @client {
-      username
-    }
-  }
-`;
-
-const GetRemoteUserInfo = gql`
-  query GetUserInfo {
-    getUserInfo {
-      username
-      fullName
-      firstName
-      lastName
-      phone
-    }
-  }
-`;
-
-export function useUserState() {
-  const location = useLocation();
+export function useUserState<T>(completed?: (data: T) => void) {
   const [getUserInfo, { data, loading, client }] = useLazyQuery<{
     getUserInfo: any;
-  }>(GetRemoteUserInfo);
+  }>(GET_USERINFO, {
+    fetchPolicy: 'network-only',
+    onCompleted: completed,
+  });
 
   React.useEffect(() => {
     if (data && data.getUserInfo !== null) {
-      client.writeQuery({ query: GetUserInfo, data: data.getUserInfo });
+      client?.writeQuery({
+        query: GET_LOCAL_USERINFO,
+        data: { userInfo: data.getUserInfo },
+      });
     }
   }, [data]);
 
-  const getUserInfoWrapper = React.useCallback(() => {
-    if (!/^\/login/.test(location.pathname)) {
-      getUserInfo();
-    }
-  }, [location]);
+  return { getUserInfo, data, loading, client };
+}
 
-  return { getUserInfo: getUserInfoWrapper, data, loading, client };
+export function useLogout() {
+  const client = useApolloClient();
+  const history = useHistory();
+
+  return () => {
+    client.resetStore();
+    removeToken();
+    history.push('/login');
+  };
 }

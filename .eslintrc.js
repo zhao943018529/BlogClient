@@ -58,6 +58,7 @@ module.exports = {
           ['@assets', './src/assets'],
           ['@controls', './src/controls'],
           ['@utils', './src/utils'],
+          ['@graphql', './src/graphql'],
         ],
         extensions: ['.ts', '.tsx', '.jpg'],
       },

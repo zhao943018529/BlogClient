@@ -13,11 +13,16 @@ const Login = React.lazy(() => import('./Login/index'));
 const Editor = React.lazy(() => import('./Editor/index'));
 const Blog = React.lazy(() => import('./Blog/index'));
 const Signup = React.lazy(() => import('./Signup/index'));
+const Profile = React.lazy(() => import('./Profile/index'));
+const D3Playground = React.lazy(() => import('./D3/index'));
 
 export default function routes() {
   return (
     <Suspense fallback={<Loading />}>
       <Switch>
+        <Route path='/d3'>
+          <D3Playground />
+        </Route>
         <Route path='/blog'>
           <Blog />
         </Route>
@@ -27,6 +32,9 @@ export default function routes() {
         <Route path='/login'>
           <Login />
         </Route>
+        <AuthRoute path='/profile'>
+          <Profile />
+        </AuthRoute>
         <AuthRoute path='/'>
           <Layout>
             <Switch>

@@ -90,4 +90,3 @@ module.exports = merge(baseConfig, {
     new webpack.HotModuleReplacementPlugin(), // 热更新插件
   ],
 });
-//"pre-commit": "lint-staged"

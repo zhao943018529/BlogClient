@@ -11,23 +11,13 @@ import {
   Theme,
   createStyles,
 } from '@material-ui/core';
-import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { Home } from '@material-ui/icons';
+import { ADD_USER } from '@graphql/user';
 
 const { useState, useCallback } = React;
 
-const AddUser = gql`
-  mutation AddUser($user: AddUserInput!) {
-    addUser(user: $user) {
-      code
-      success
-      message
-    }
-  }
-`;
-
-interface IAddUserResponse {
+interface AddUserResponse {
   addUser: IBaseResponse<IUser>;
 }
 
@@ -76,7 +66,7 @@ const ActionContainer = styled.div`
   margin-top: 8px;
 `;
 
-interface IUserResponse {
+interface UserResponse {
   code: number;
 }
 
@@ -91,7 +81,7 @@ export default function Signup() {
     birthday: '',
   });
 
-  const [addUser, { data }] = useMutation<IAddUserResponse, any>(AddUser);
+  const [addUser, { data }] = useMutation<AddUserResponse, any>(ADD_USER);
   const handleSubmit = () => {
     addUser({ variables: { user: formData } });
   };

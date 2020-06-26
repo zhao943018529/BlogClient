@@ -18,7 +18,8 @@
       "@components/*": ["./components/*"],
       "@store/*": ["./store/*"],
       "@controls/*": ["./controls/*"],
-      "@utils/*": ["./utils/*"]
+      "@utils/*": ["./utils/*"],
+      "@graphql/*": ["./graphql/*"]
     }
   },
   "include": ["src/**/*"],

@@ -13,30 +13,12 @@ import {
   Checkbox,
   Button,
 } from '@material-ui/core';
-import gql from 'graphql-tag';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery, useApolloClient } from '@apollo/client';
 import { EnhancedEncryption } from '@material-ui/icons';
 import { loginUserSuccess } from '@store/common/User';
 import { saveToken } from '@utils/token';
 import { useUserState } from '@utils/user';
-
-const UserQuery = gql`
-  query GetUer($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      code
-      success
-      data {
-        id
-        firstName
-        lastName
-        username
-        birthday
-        phone
-        createTime
-      }
-    }
-  }
-`;
+import { LOGIN_USER, USER_LOGIN } from '@graphql/user';
 
 const Content = styled.div`
   display: flex;
@@ -87,7 +69,16 @@ interface ILoginResponse {
 }
 
 export default function Login() {
-  const { getUserInfo, loading } = useUserState();
+  const client = useApolloClient();
+  const completedCallback = React.useCallback((data: { getUserInfo: any }) => {
+    if (data.getUserInfo != null) {
+      history.push('/');
+    }
+  }, []);
+
+  const { getUserInfo, loading } = useUserState<{ getUserInfo: any }>(
+    completedCallback
+  );
   const history = useHistory();
   const dispatch = useDispatch();
   // const user = useSelector(getUser, shallowEqual);
@@ -110,7 +101,7 @@ export default function Login() {
   const [loginUser, { data }] = useLazyQuery<
     ILoginResponse,
     { username: string; password: string }
-  >(UserQuery, { variables: { username, password } });
+  >(LOGIN_USER, { variables: { username, password } });
 
   const handleSubmit = () => {
     // loginUser();
@@ -120,21 +111,12 @@ export default function Login() {
       .then((res) => {
         if (res.data.code === 200) {
           saveToken(res.data.data);
+          client.writeQuery({ query: USER_LOGIN, data: { isLoggedIn: true } });
           getUserInfo();
           // history.push('/');
         }
       });
   };
-
-  React.useEffect(() => {
-    // if (data?.login.success) {
-    //   // dispatch({ type: loginUserSuccess, payload: data?.login.data });
-
-    // }
-    if (loading) {
-      history.push('/');
-    }
-  }, [loading]);
 
   return (
     <Container maxWidth='xs'>

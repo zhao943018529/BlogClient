@@ -21,9 +21,11 @@ import {
   Settings,
   Facebook,
   ColorLens,
+  ExitToApp,
   Input as InputIcon,
 } from '@material-ui/icons';
 import Skin from './Skin';
+import { useLogout } from '@utils/user';
 
 const { useState } = React;
 
@@ -65,9 +67,7 @@ export default function Header(props: IHeaderProps) {
 
   const history = useHistory();
 
-  const handleLogin = () => {
-    history.push('/login');
-  };
+  const logout = useLogout();
 
   return (
     <AppBar position='fixed' className={classes && classes.root}>
@@ -107,12 +107,6 @@ export default function Header(props: IHeaderProps) {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleLogin}>
-          <ListItemIcon>
-            <InputIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Sign in' />
-        </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <Settings fontSize='small' />
@@ -124,6 +118,12 @@ export default function Header(props: IHeaderProps) {
             <Facebook fontSize='small' />
           </ListItemIcon>
           <ListItemText primary='Facebook' />
+        </MenuItem>
+        <MenuItem onClick={logout}>
+          <ListItemIcon>
+            <ExitToApp fontSize='small' />
+          </ListItemIcon>
+          <ListItemText primary='Logout' />
         </MenuItem>
       </Menu>
       <Dialog open={open} onClose={handleDialogClose}>

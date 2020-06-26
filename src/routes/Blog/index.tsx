@@ -1,19 +1,30 @@
 import * as React from 'react';
-import { Container } from '@material-ui/core';
+import { Container, makeStyles, createStyles, Theme } from '@material-ui/core';
 import Header from './components/Header';
-import MainFeature from './components/MainFeature';
-import Features from './components/Features';
-import Main from './components/Main';
+import Routes from './routes';
 
-export default function blog() {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      background: theme.palette.background.default,
+    },
+    main: {
+      padding: `${theme.spacing(1.2)}px ${theme.spacing(1)}px`,
+    },
+  })
+);
+
+export default function Blog() {
+  const classes = useStyles();
+
   return (
-    <Container maxWidth='lg'>
-      <Header />
-      <main>
-        <MainFeature />
-        <Features />
-        <Main />
-      </main>
-    </Container>
+    <div className={classes.root}>
+      <Container maxWidth='lg'>
+        <Header />
+        <main className={classes.main}>
+          <Routes />
+        </main>
+      </Container>
+    </div>
   );
 }

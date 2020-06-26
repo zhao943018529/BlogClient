@@ -49,8 +49,38 @@ interface IUser {
 
 /** GraphQL types */
 interface IBaseResponse<T> {
-  code: String;
-  success: Boolean;
-  message?: String;
+  code: string;
+  success: boolean;
+  message?: string;
   data: T;
+}
+
+interface Tag {
+  id: string;
+  title: string;
+  description: string;
+}
+
+interface Article {
+  id: string;
+  title: string;
+  content: string | null;
+  tags: string[] | Tag[];
+  author: IUser;
+  createTime: number;
+  updateTime: number;
+}
+
+interface Pagination {
+  page: number;
+  pageSize: number;
+  order: string;
+  orderBy: string;
+}
+
+interface Role {
+  id: string;
+  title: string;
+  description: string;
+  createTime: string;
 }

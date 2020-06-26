@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Popover, Input, Theme, Chip } from '@material-ui/core';
+import { Button, Avatar, Popover, Input, Theme, Chip } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import styled from 'styled-components';
 
@@ -34,17 +34,17 @@ interface TagProps<T> {
   icon?: React.ReactElement;
 }
 
-interface TagControlProps<T> {
-  tags: TagProps<T>[];
-  values: T[];
-  onChange(values: T[]): void;
+interface TagControlProps {
+  tags: Tag[];
+  values: string[];
+  onChange(values: string[]): void;
 }
 
-export default function TagControl<T>({
+export default function TagControl({
   tags,
   values,
   onChange,
-}: TagControlProps<T>) {
+}: TagControlProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -60,7 +60,7 @@ export default function TagControl<T>({
     setValue(evt.target.value);
   };
 
-  const selectChange = (value: T) => {
+  const selectChange = (value: string) => {
     if (values.indexOf(value) === -1) {
       onChange([...values, value]);
     }
@@ -93,16 +93,15 @@ export default function TagControl<T>({
           />
           <TagContent>
             {tags
-              .filter((tag) => String(tag.value).indexOf(value) !== -1)
+              .filter((tag) => tag.title.indexOf(value) !== -1)
               .map((item) => (
                 <ChipWrapper
-                  key={String(item.value)}
+                  key={item.id}
                   label={item.title}
-                  disabled={item.disabled || values.indexOf(item.value) !== -1}
+                  disabled={values.indexOf(item.id) !== -1}
                   color='primary'
-                  icon={item.icon}
-                  avatar={item.avatar}
-                  onClick={() => selectChange(item.value)}
+                  avatar={<Avatar>{item.title[0].toUpperCase()}</Avatar>}
+                  onClick={() => selectChange(item.id)}
                 />
               ))}
           </TagContent>

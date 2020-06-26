@@ -22,6 +22,7 @@ import {
   Edit,
   Create as CreateIcon,
   Pets as PetsIcon,
+  Apple,
   // ArrowRight,
 } from '@material-ui/icons';
 import ListItemLink from './ListItemLink';
@@ -92,6 +93,7 @@ export default function Sidebar(props: ISideBarProps) {
           { to: '/editor', primary: 'Editor', icon: <Edit /> },
           { to: '/blog', primary: 'Blog', icon: <CreateIcon /> },
           { to: '/signup', primary: 'Signup', icon: <PetsIcon /> },
+          { to: '/profile', primary: 'Profile', icon: <Apple /> },
         ].map((item) => (
           <ListItemLink
             key={item.to}

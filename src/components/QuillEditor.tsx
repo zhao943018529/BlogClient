@@ -30,10 +30,12 @@ export type UploadImage = (file: File, callback: InsertImageCallback) => void;
 type Mode = 'Design' | 'Render';
 
 interface QuillEditorProps {
+  value: string | null;
   textChange?: TextChangeHandler;
   uploadImage?: UploadImage;
   className?: string;
   mode?: Mode;
+  onCompleted?(change: any): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -44,6 +46,8 @@ export function QuillEditor({
   uploadImage,
   className,
   mode,
+  value,
+  onCompleted,
 }: QuillEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const editor = useRef<Quill>();
@@ -117,9 +121,23 @@ export function QuillEditor({
         theme: readOnly ? 'bubble' : 'snow',
         readOnly,
       });
-      const toolbar = inst.getModule('toolbar');
-      toolbar.addHandler('image', imageHandler);
-      inst.on('text-change', changeRef.current);
+      if (mode === 'Design') {
+        const toolbar = inst.getModule('toolbar');
+        toolbar.addHandler('image', imageHandler);
+        inst.on('text-change', function (a, b, c) {
+          changeRef.current(inst.getContents());
+        });
+      } else {
+        inst.once('text-change', function (change) {
+          if (onCompleted) {
+            onCompleted(change);
+          }
+        });
+      }
+      if (value) {
+        inst.setContents(JSON.parse(value));
+        // changeRef.current(value);
+      }
       editor.current = inst;
     }
   }, []);

@@ -41,11 +41,11 @@ const LoadingRoot = styled.div<{ Color: string }>`
   }
 `;
 
-interface ILoadingProps {
+interface LoadingProps {
   color?: string;
 }
 
-export default function Loading(props: ILoadingProps) {
+export default function Loading(props: LoadingProps) {
   return (
     <LoadingRoot Color={props.color || '#FFFFFF'}>
       <div></div>

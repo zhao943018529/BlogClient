@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Toolbar } from '@material-ui/core';
-import NavLink from './NavLink';
+import NavLink from '../routes/Home/components/NavLink';
 
 const links = [
   { to: '/category/javascript', name: 'Javascript' },

@@ -34,7 +34,7 @@ module.exports = {
   entry: path.resolve(__dirname, 'src', 'index.tsx'),
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[hash:6].js',
+    filename: 'js/[name].[hash:6].js',
     chunkFilename: '[name].[chunkhash:8].js',
     publicPath: '/',
   },
@@ -47,6 +47,7 @@ module.exports = {
       '@store': path.resolve(__dirname, './src/store'),
       '@controls': path.resolve(__dirname, './src/controls'),
       '@utils': path.resolve(__dirname, './src/utils'),
+      '@graphql': path.resolve(__dirname, './src/graphql'),
     },
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
@@ -55,7 +56,8 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|js)x?$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
+        include: path.resolve(__dirname, 'src'),
         use: [
           'thread-loader',
           { loader: 'babel-loader', options: { cacheDirectory: true } },
@@ -107,8 +109,10 @@ module.exports = {
         test: /\.(eot|ttf|svg|woff|woff2)$/,
         // exclude: /node_modules/,
         // include: [],
-        use: {
-          loader: 'file-loader',
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+          outputPath: 'styles',
         },
       },
     ],
@@ -135,20 +139,29 @@ module.exports = {
   ],
   // sideEffects: ['*.css', '*.scss'],
   optimization: {
+    moduleIds: 'hashed',
     sideEffects: false,
     splitChunks: {
+      chunks: 'all',
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      minChunks: 1,
       cacheGroups: {
         vendor: {
           chunks: 'initial',
-          minSize: 0,
           minChunks: 2,
           test: /[\\/]node_modules[\\/]/,
           priority: 1,
         },
-        utils: {
-          chunks: 'initial',
-          minSize: 0,
+        materialUI: {
           minChunks: 2,
+          test: /[\\/]node_modules[\\/]@material-ui(.*)/,
+          priority: 5,
+        },
+        common: {
+          minChunks: 2, //覆盖外层的全局属性
+          priority: -20,
+          reuseExistingChunk: true, //是否复用已经从原代码块中分割出来的模块
         },
       },
     },

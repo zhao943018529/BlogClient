@@ -1,25 +1,30 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-// import { ApolloClient, InMemoryCache } from '@apollo/client';
-// import { ApolloProvider } from '@apollo/client';
-import { ApolloClient } from 'apollo-client';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { onError } from 'apollo-link-error';
-// import { withClientState } from 'apollo-link-state';
-import { ApolloLink, Observable, Operation } from 'apollo-link';
+import { StylesProvider } from '@material-ui/core';
 import { createStore, applyMiddleware } from 'redux';
-// eslint-disable-next-line import/no-unresolved
-import { createUploadLink } from 'apollo-upload-client';
 import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { BrowserRouter as Router } from 'react-router-dom';
-import 'typeface-roboto';
-import { StylesProvider } from '@material-ui/core';
-import { getToken } from '@utils/token';
+import {
+  useQuery,
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  InMemoryCache,
+  Observable,
+  Operation,
+} from '@apollo/client';
+import { onError } from '@apollo/link-error';
+// 导入样式
+import { GET_LOCAL_USERINFO, USER_LOGIN } from '@graphql/user';
 import App from './app';
 import reducers from './store';
+import { createUploadLink } from 'apollo-upload-client';
+import { useHistory } from 'react-router-dom';
+import { getToken, removeToken } from '@utils/token';
+import 'typeface-roboto';
+import './styles/index.scss';
 
 const store = createStore(
   reducers,
@@ -66,6 +71,7 @@ const requestLink = new ApolloLink(
 );
 
 const client = new ApolloClient({
+  // uri: 'http://10.11.1.145:13892/graphql',
   link: ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
@@ -76,21 +82,38 @@ const client = new ApolloClient({
         );
       if (networkError) {
         if (networkError.statusCode === 401) {
-          window.location.href = '/login';
+          removeToken();
+          cache.writeQuery({ query: USER_LOGIN, data: { isLoggedIn: false } });
+          if (!/^\/login/.test(window.location.pathname)) {
+            window.location.href = '/login';
+          }
         }
       }
     }),
     requestLink,
     createUploadLink({ uri: 'http://10.11.1.145:13892/graphql' }),
   ]),
+  // headers: {
+  //   Authorization: `Bearer ${getToken()}`,
+  // },
   cache,
   // uri: 'http://10.11.1.140:13892/graphql',
   // cache: new InMemoryCache(),
 });
 
-cache.writeData({
+const defaultData = {
+  userInfo: null,
+};
+
+cache.writeQuery({
+  query: GET_LOCAL_USERINFO,
+  data: defaultData,
+});
+
+cache.writeQuery({
+  query: USER_LOGIN,
   data: {
-    userInfo: null,
+    isLoggedIn: !!getToken(),
   },
 });
 
@@ -99,9 +122,7 @@ const render = () => {
     <ApolloProvider client={client}>
       <StylesProvider injectFirst>
         <Provider store={store}>
-          <Router>
-            <App />
-          </Router>
+          <App />
         </Provider>
       </StylesProvider>
     </ApolloProvider>

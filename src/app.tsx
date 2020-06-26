@@ -1,6 +1,9 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, {
+  ThemeProvider as StyledThemeProvider,
+} from 'styled-components';
 import { useSelector, shallowEqual } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
 import {
   createMuiTheme,
   ThemeProvider,
@@ -8,19 +11,22 @@ import {
   CircularProgress,
   Theme,
 } from '@material-ui/core';
-import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { useQuery } from '@apollo/client';
 // import { Backdrop, CircularProgress, Theme } from '@material-ui/core';
+import { GET_USERINFO, GET_LOCAL_USERINFO } from '@graphql/user';
+import { getToken, removeToken } from '@utils/token';
 
 import Routes from './routes';
 import { getTheme } from './store/common';
-import { useUserState } from './utils/user';
 
 const ThemeBackdrop = styled(Backdrop)`
   color: ${(props) => props.theme.palette.secondary.main};
 `;
 
 export default function App() {
-  const { getUserInfo, data, loading, client } = useUserState();
+  const { data, loading, client } = useQuery<{ getUserInfo: any }>(
+    GET_USERINFO
+  );
   const themeData = useSelector(getTheme, shallowEqual);
   const theme = createMuiTheme({
     palette: {
@@ -34,15 +40,16 @@ export default function App() {
     },
   });
   // window.$theme = theme;
-
-  const [inited, setInited] = React.useState(false);
-
   React.useEffect(() => {
-    getUserInfo();
-    setInited(true);
-  }, []);
+    if (data?.getUserInfo != null) {
+      client.writeQuery({
+        query: GET_LOCAL_USERINFO,
+        data: { userInfo: data?.getUserInfo },
+      });
+    }
+  }, [data]);
 
-  if (!inited || loading) {
+  if (loading) {
     return (
       <ThemeBackdrop open={true} theme={theme}>
         <CircularProgress color='inherit' />
@@ -53,7 +60,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <StyledThemeProvider theme={theme}>
-        <Routes />
+        <Router>
+          <Routes />
+        </Router>
       </StyledThemeProvider>
     </ThemeProvider>
   );
